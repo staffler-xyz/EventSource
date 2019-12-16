@@ -190,6 +190,12 @@ open class EventSource: NSObject, EventSourceProtocol, URLSessionDataDelegate {
         self.headers.forEach { newRequest.setValue($1, forHTTPHeaderField: $0) }
         completionHandler(newRequest)
     }
+
+    open func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        if let trust = challenge.protectionSpace.serverTrust {
+            completionHandler(.useCredential, URLCredential(trust: trust))
+        }
+    }
 }
 
 internal extension EventSource {
